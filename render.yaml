@@ -1,0 +1,24 @@
+services:
+  # Web service
+  - type: web
+    name: sms-project-sibalon-silot
+    env: python
+    buildCommand: ./build.sh
+    startCommand: cd student_management_system && gunicorn student_management_system.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: student_management_system.settings_production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sms-database
+          property: connectionString
+
+  # Database service
+  - type: postgres
+    name: sms-database
+    plan: free # Using the free tier
+    ipAllowList: [] # Only allow internal connections

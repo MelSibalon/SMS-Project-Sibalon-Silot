@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/scrollable-tables.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(90deg, #2d3a3a, #3a5a40);">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'dashboard' %}">
+                <i class="fas fa-graduation-cap me-2"></i> <span>Student Management System</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}" href="{% url 'dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'index' %}">
+                            <i class="fas fa-user-graduate me-1"></i> Students
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/subjects/' %}active{% endif %}" href="{% url 'subjects' %}">
+                            <i class="fas fa-book me-1"></i> Subjects
+                        </a>
+                    </li>
+                 
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb navigation -->
+
+
+    <!-- Notification area with fixed position -->
+    <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/enhanced-tables.js' %}"></script>
+    <script src="{% static 'js/pagination.js' %}"></script>
+    <script src="{% static 'js/quick-nav.js' %}"></script>
+    <script src="{% static 'js/navigation.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

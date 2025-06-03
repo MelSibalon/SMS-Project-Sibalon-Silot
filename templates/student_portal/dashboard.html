@@ -1,0 +1,1122 @@
+{% extends 'student_portal/base.html' %}
+
+
+
+{% block content %}
+<div class="dashboard-header mb-4">
+    <h1 class="display-5 fw-bold">Student Management Dashboard</h1>
+    <p class="text-muted lead">Welcome to your centralized education management center</p>
+</div>
+
+<div class="row mb-5">
+    <!-- Stats Cards -->
+    <div class="col-md-6 mb-4">
+        <div class="stats-card stats-students">
+            <div class="stats-content">
+                <div class="stats-number" id="students-count">-</div>
+                <div class="stats-title">Total Students</div>
+                <p class="stats-description">Enrolled across all courses</p>
+            </div>
+            <div class="stats-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <a href="{% url 'index' %}" class="stretched-link"></a>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="stats-card stats-subjects">
+            <div class="stats-content">
+                <div class="stats-number" id="subjects-count">-</div>
+                <div class="stats-title">Total Subjects</div>
+                <p class="stats-description">Currently being taught</p>
+            </div>
+            <div class="stats-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <a href="{% url 'subjects' %}" class="stretched-link"></a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Quick Actions -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-bolt me-2 text-primary"></i>
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="action-list">
+                    <a href="#" class="action-item" data-bs-toggle="modal" data-bs-target="#quickAddStudentModal">
+                        <div class="action-icon bg-primary-light">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Add New Student</h6>
+                            <p class="action-description">Register a student to the system</p>
+                        </div>
+                        <i class="fas fa-chevron-right action-arrow"></i>
+                    </a>
+                    <a href="#" class="action-item" data-bs-toggle="modal" data-bs-target="#quickAddSubjectModal">
+                        <div class="action-icon bg-accent-light">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Add New Subject</h6>
+                            <p class="action-description">Create a new course or subject</p>
+                        </div>
+                        <i class="fas fa-chevron-right action-arrow"></i>
+                    </a>
+                    <a href="#" class="action-item" data-bs-toggle="modal" data-bs-target="#quickEnrollStudentModal">
+                        <div class="action-icon bg-info-light">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Enroll Student</h6>
+                            <p class="action-description">Add a student to a subject</p>
+                        </div>
+                        <i class="fas fa-chevron-right action-arrow"></i>
+                    </a>
+                    <a href="#" class="action-item" data-bs-toggle="modal" data-bs-target="#quickAddSubjectToStudentModal">
+                        <div class="action-icon bg-warning-light">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Add Subject to Student</h6>
+                            <p class="action-description">Enroll a student in multiple subjects</p>
+                        </div>
+                        <i class="fas fa-chevron-right action-arrow"></i>
+                    </a>
+                    <a href="#" class="action-item" data-bs-toggle="modal" data-bs-target="#quickAddGradeModal">
+                        <div class="action-icon bg-success-light">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Record New Grade</h6>
+                            <p class="action-description">Add academic performance entry</p>
+                        </div>
+                        <i class="fas fa-chevron-right action-arrow"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Students -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-user-graduate me-2 text-primary"></i>
+                <h5 class="card-title mb-0">Recent Students</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="modern-list" id="recent-students-list">
+                    <li class="modern-list-item placeholder-glow">
+                        <div class="modern-list-avatar placeholder rounded-circle"></div>
+                        <div class="modern-list-content">
+                            <span class="placeholder col-7"></span>
+                            <span class="placeholder col-4"></span>
+                        </div>
+                    </li>
+                    <li class="modern-list-item placeholder-glow">
+                        <div class="modern-list-avatar placeholder rounded-circle"></div>
+                        <div class="modern-list-content">
+                            <span class="placeholder col-5"></span>
+                            <span class="placeholder col-4"></span>
+                        </div>
+                    </li>
+                    <li class="modern-list-item placeholder-glow">
+                        <div class="modern-list-avatar placeholder rounded-circle"></div>
+                        <div class="modern-list-content">
+                            <span class="placeholder col-8"></span>
+                            <span class="placeholder col-4"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{% url 'index' %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="fas fa-users me-1"></i> View All Students
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Subjects -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-book me-2 text-primary"></i>
+                <h5 class="card-title mb-0">Recent Subjects</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="modern-list" id="recent-subjects-list">
+                    <li class="modern-list-item placeholder-glow">
+                        <div class="modern-list-icon placeholder"></div>
+                        <div class="modern-list-content">
+                            <span class="placeholder col-7"></span>
+                            <span class="placeholder col-4"></span>
+                        </div>
+                    </li>
+                    <li class="modern-list-item placeholder-glow">
+                        <div class="modern-list-icon placeholder"></div>
+                        <div class="modern-list-content">
+                            <span class="placeholder col-5"></span>
+                            <span class="placeholder col-4"></span>
+                        </div>
+                    </li>
+                    <li class="modern-list-item placeholder-glow">
+                        <div class="modern-list-icon placeholder"></div>
+                        <div class="modern-list-content">
+                            <span class="placeholder col-8"></span>
+                            <span class="placeholder col-4"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{% url 'subjects' %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="fas fa-books me-1"></i> View All Subjects
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Add Student Modal -->
+<div class="modal fade" id="quickAddStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quick-add-student-form">
+                    <div class="mb-3">
+                        <label for="quick_first_name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="quick_first_name" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="quick_last_name" name="last_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_student_id" class="form-label">Student ID</label>
+                        <input type="text" class="form-control" id="quick_student_id" name="student_id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="quick_email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_date_of_birth" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" id="quick_date_of_birth" name="date_of_birth" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_course" class="form-label">Course</label>
+                        <select class="form-select" id="quick_course" name="course" required>
+                            <option value="" selected disabled>Select course...</option>
+                            <option value="BSIT">BSIT - Bachelor of Science in Information Technology</option>
+                            <option value="BSCS">BSCS - Bachelor of Science in Computer Science</option>
+                            <option value="BSIS">BSIS - Bachelor of Science in Information Systems</option>
+                            <option value="BSCE">BSCE - Bachelor of Science in Civil Engineering</option>
+                            <option value="BSEE">BSEE - Bachelor of Science in Electrical Engineering</option>
+                            <option value="BSME">BSME - Bachelor of Science in Mechanical Engineering</option>
+                            <option value="BSIE">BSIE - Bachelor of Science in Industrial Engineering</option>
+                            <option value="BSBA">BSBA - Bachelor of Science in Business Administration</option>
+                            <option value="BSA">BSA - Bachelor of Science in Accountancy</option>
+                            <option value="BSED">BSED - Bachelor of Science in Education</option>
+                            <option value="BSTM">BSTM - Bachelor of Science in Tourism Management</option>
+                            <option value="BSHM">BSHM - Bachelor of Science in Hospitality Management</option>
+                            <option value="BSHRM">BSHRM - Bachelor of Science in Human Resource Management</option>
+                            <option value="BSCA">BSCA - Bachelor of Science in Computer Applications</option>
+                            <option value="BSECE">BSECE - Bachelor of Science in Electronics and Communications Engineering</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="quick_year" class="form-label">Year</label>
+                            <select class="form-select" id="quick_year" name="year" required>
+                                <option value="" selected disabled>Select year...</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="quick_section" class="form-label">Section</label>
+                            <select class="form-select" id="quick_section" name="section" required>
+                                <option value="" selected disabled>Select section...</option>
+                                <option value="1">Section 1</option>
+                                <option value="2">Section 2</option>
+                                <option value="3">Section 3</option>
+                                <option value="4">Section 4</option>
+                                <option value="5">Section 5</option>
+                                <option value="6">Section 6</option>
+                                <option value="7">Section 7</option>
+                                <option value="8">Section 8</option>
+                                <option value="9">Section 9</option>
+                                <option value="10">Section 10</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="quick-save-student-btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Add Subject Modal -->
+<div class="modal fade" id="quickAddSubjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quick-add-subject-form">
+                    <div class="mb-3">
+                        <label for="quick_subject_name" class="form-label">Subject Name</label>
+                        <input type="text" class="form-control" id="quick_subject_name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_subject_code" class="form-label">Subject Code</label>
+                        <input type="text" class="form-control" id="quick_subject_code" name="code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_subject_description" class="form-label">Description</label>
+                        <textarea class="form-control" id="quick_subject_description" name="description" rows="3"></textarea>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="quick-save-subject-btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Enroll Student Modal -->
+<div class="modal fade" id="quickEnrollStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Enroll Student in Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quick-enroll-student-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="quick_enroll_student" class="form-label">Select Student</label>
+                        <select class="form-select" id="quick_enroll_student" name="student_id" required>
+                            <option value="" selected disabled>Choose a student...</option>
+                            <!-- Students will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_enroll_subject" class="form-label">Select Subject</label>
+                        <select class="form-select" id="quick_enroll_subject" name="subject_id" required>
+                            <option value="" selected disabled>Choose a subject...</option>
+                            <!-- Subjects will be loaded here -->
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="quick-enroll-student-btn">Enroll</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Add Subject to Student Modal -->
+<div class="modal fade" id="quickAddSubjectToStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Subjects to Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quick-add-subject-to-student-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="quick_subject_student" class="form-label">Select Student</label>
+                        <select class="form-select" id="quick_subject_student" name="student_id" required>
+                            <option value="" selected disabled>Choose a student...</option>
+                            <!-- Students will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_subject_list" class="form-label">Select Subjects</label>
+                        <select class="form-select" id="quick_subject_list" name="subject_ids" multiple size="8" required style="height: auto;">
+                            <!-- Subjects will be loaded here -->
+                        </select>
+                        <!-- No instruction needed here -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="quick-add-subject-to-student-btn">Add Subjects</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Add Grade Modal -->
+<div class="modal fade" id="quickAddGradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Record New Grade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quick-add-grade-form">
+                    <div class="mb-3">
+                        <label for="quick_grade_student" class="form-label">Student</label>
+                        <select class="form-select" id="quick_grade_student" name="student" required>
+                            <option value="" selected disabled>Select student...</option>
+                            <!-- Students will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_grade_subject" class="form-label">Subject</label>
+                        <select class="form-select" id="quick_grade_subject" name="subject" required>
+                            <option value="" selected disabled>Select subject...</option>
+                            <!-- Subjects will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_grade_type" class="form-label">Grade Type</label>
+                        <select class="form-select" id="quick_grade_type" name="grade_type" required>
+                            <option value="" selected disabled>Select type...</option>
+                            <option value="ACTIVITY">Activity</option>
+                            <option value="QUIZ">Quiz</option>
+                            <option value="EXAM">Exam</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_grade_score" class="form-label">Score</label>
+                        <input type="number" min="0" max="100" step="0.01" class="form-control" id="quick_grade_score" name="score" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_grade_max_score" class="form-label">Max Score</label>
+                        <input type="number" min="0" step="0.01" class="form-control" id="quick_grade_max_score" name="max_score" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_grade_date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="quick_grade_date" name="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quick_grade_description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="quick_grade_description" name="description">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="quick-save-grade-btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load dashboard data
+        loadDashboardData();
+        
+        // Set up event listeners for quick actions
+        document.getElementById('quick-save-student-btn').addEventListener('click', handleQuickSaveStudent);
+        document.getElementById('quick-save-subject-btn').addEventListener('click', handleQuickSaveSubject);
+        document.getElementById('quick-save-grade-btn').addEventListener('click', handleQuickSaveGrade);
+        document.getElementById('quick-enroll-student-btn').addEventListener('click', handleQuickEnrollStudent);
+        document.getElementById('quick-add-subject-to-student-btn').addEventListener('click', handleQuickAddSubjectToStudent);
+        
+        // Set up modal initialization event listeners
+        const enrollStudentModal = document.getElementById('quickEnrollStudentModal');
+        if (enrollStudentModal) {
+            enrollStudentModal.addEventListener('show.bs.modal', function() {
+                // Ensure students and subjects are loaded when the modal is shown
+                loadStudentsForEnrollmentForms();
+                loadSubjectsForEnrollmentForm();
+            });
+        }
+        
+        const addSubjectToStudentModal = document.getElementById('quickAddSubjectToStudentModal');
+        if (addSubjectToStudentModal) {
+            addSubjectToStudentModal.addEventListener('show.bs.modal', function() {
+                // Ensure students and subjects are loaded when the modal is shown
+                loadStudentsForEnrollmentForms();
+                // Directly load all subjects into the select list
+                loadAllSubjectsForMultiSelect();
+            });
+        }
+        
+        // Set current date as default for new grades
+        document.getElementById('quick_grade_date').valueAsDate = new Date();
+        
+        // Load students and subjects for all forms
+        loadStudentsForGradeForm();
+        loadSubjectsForGradeForm();
+        loadStudentsForEnrollmentForms();
+        loadSubjectsForEnrollmentForms();
+    });
+    
+    async function loadDashboardData() {
+        try {
+            // Load counts
+            const studentsData = await getStudents();
+            const subjectsData = await getSubjects();
+            
+            document.getElementById('students-count').textContent = studentsData.count || 0;
+            document.getElementById('subjects-count').textContent = subjectsData.count || 0;
+            
+            // Load recent students (top 5)
+            const recentStudentsList = document.getElementById('recent-students-list');
+            if (studentsData.results && studentsData.results.length > 0) {
+                recentStudentsList.innerHTML = studentsData.results.slice(0, 5).map(student => `
+                    <li class="modern-list-item">
+                        <div class="modern-list-avatar">
+                            ${student.first_name.charAt(0)}${student.last_name.charAt(0)}
+                        </div>
+                        <div class="modern-list-content">
+                            <h6 class="modern-list-title">
+                                <a href="/students/${student.id}/" class="text-decoration-none">${student.first_name} ${student.last_name}</a>
+                            </h6>
+                            <p class="modern-list-subtitle">
+                                <span class="badge" style="background-color: #6a994e;">${student.student_id}</span>
+                                ${student.course ? `<span class="badge text-dark" style="background-color: #e9edc9;">${student.course}</span>` : ''}
+                            </p>
+                        </div>
+                    </li>
+                `).join('');
+            } else {
+                recentStudentsList.innerHTML = '<li class="text-center py-3">No students found</li>';
+            }
+            
+            // Load recent subjects (top 5)
+            const recentSubjectsList = document.getElementById('recent-subjects-list');
+            if (subjectsData.results && subjectsData.results.length > 0) {
+                recentSubjectsList.innerHTML = subjectsData.results.slice(0, 5).map(subject => `
+                    <li class="modern-list-item">
+                        <div class="modern-list-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="modern-list-content">
+                            <h6 class="modern-list-title">
+                                <a href="/subjects/${subject.id}/" class="text-decoration-none">${subject.name}</a>
+                            </h6>
+                            <p class="modern-list-subtitle">
+                                <span class="badge" style="background-color: #3a5a40; color: white;">${subject.code}</span>
+                            </p>
+                        </div>
+                    </li>
+                `).join('');
+            } else {
+                recentSubjectsList.innerHTML = '<li class="text-center py-3">No subjects found</li>';
+            }
+            
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+            // Show friendly error message
+            document.getElementById('recent-students-list').innerHTML = 
+                '<li class="text-center py-3 text-danger">Could not load student data</li>';
+            document.getElementById('recent-subjects-list').innerHTML = 
+                '<li class="text-center py-3 text-danger">Could not load subject data</li>';
+        }
+    }
+    
+    async function loadStudentsForGradeForm() {
+        try {
+            const data = await getStudents();
+            const selectElement = document.getElementById('quick_grade_student');
+            
+            data.results.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.first_name} ${student.last_name} (${student.student_id})`;
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading students for grade form:', error);
+        }
+    }
+    
+    async function loadSubjectsForGradeForm() {
+        try {
+            const data = await getSubjects();
+            const selectElement = document.getElementById('quick_grade_subject');
+            
+            data.results.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject.id;
+                option.textContent = `${subject.name} (${subject.code})`;
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading subjects for grade form:', error);
+        }
+    }
+    
+    async function handleQuickSaveStudent() {
+        try {
+            const form = document.getElementById('quick-add-student-form');
+            const formData = new FormData(form);
+            const studentData = {};
+            
+            formData.forEach((value, key) => {
+                studentData[key] = value;
+            });
+            
+            await createStudent(studentData);
+            showAlert('Student added successfully!');
+            
+            // Reset form and close modal
+            form.reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('quickAddStudentModal'));
+            modal.hide();
+            
+            // Reload dashboard data
+            loadDashboardData();
+        } catch (error) {
+            console.error('Error saving student:', error);
+        }
+    }
+    
+    async function handleQuickSaveSubject() {
+        try {
+            const form = document.getElementById('quick-add-subject-form');
+            const formData = new FormData(form);
+            const subjectData = {};
+            
+            formData.forEach((value, key) => {
+                subjectData[key] = value;
+            });
+            
+            await createSubject(subjectData);
+            showAlert('Subject added successfully!');
+            
+            // Reset form and close modal
+            form.reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('quickAddSubjectModal'));
+            modal.hide();
+            
+            // Reload dashboard data
+            loadDashboardData();
+            
+            // Reload subjects for grade form
+            loadSubjectsForGradeForm();
+        } catch (error) {
+            console.error('Error saving subject:', error);
+        }
+    }
+    
+    async function handleQuickSaveGrade() {
+        try {
+            const form = document.getElementById('quick-add-grade-form');
+            const formData = new FormData(form);
+            const gradeData = {};
+            
+            formData.forEach((value, key) => {
+                gradeData[key] = value;
+            });
+            
+            await createGrade(gradeData);
+            showAlert('Grade recorded successfully!');
+            
+            // Reset form and close modal
+            form.reset();
+            document.getElementById('quick_grade_date').valueAsDate = new Date();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('quickAddGradeModal'));
+            modal.hide();
+            
+            // Reload dashboard data
+            loadDashboardData();
+        } catch (error) {
+            console.error('Error saving grade:', error);
+        }
+    }
+    
+    async function loadStudentsForEnrollmentForms() {
+        try {
+            // Get the student select elements
+            const quickEnrollStudentSelect = document.getElementById('quick_enroll_student');
+            const quickSubjectStudentSelect = document.getElementById('quick_subject_student');
+            
+            // Clear existing options except the placeholder
+            quickEnrollStudentSelect.innerHTML = '<option value="" disabled selected>Choose a student...</option>';
+            quickSubjectStudentSelect.innerHTML = '<option value="" disabled selected>Choose a student...</option>';
+            
+            // Add loading options
+            const loadingOption1 = document.createElement('option');
+            loadingOption1.disabled = true;
+            loadingOption1.textContent = 'Loading students...';
+            quickEnrollStudentSelect.appendChild(loadingOption1);
+            
+            const loadingOption2 = document.createElement('option');
+            loadingOption2.disabled = true;
+            loadingOption2.textContent = 'Loading students...';
+            quickSubjectStudentSelect.appendChild(loadingOption2);
+            
+            // Directly fetch students from the API
+            const response = await fetch('/api/students/');
+            if (!response.ok) throw new Error('Failed to fetch students');
+            
+            const data = await response.json();
+            const students = data.results || [];
+            
+            // Clear loading options
+            quickEnrollStudentSelect.innerHTML = '<option value="" disabled selected>Choose a student...</option>';
+            quickSubjectStudentSelect.innerHTML = '<option value="" disabled selected>Choose a student...</option>';
+            
+            // Add student options to both selects
+            if (students.length > 0) {
+                students.forEach(student => {
+                    const option1 = document.createElement('option');
+                    option1.value = student.id;
+                    option1.textContent = `${student.first_name} ${student.last_name} (${student.student_id})`;
+                    quickEnrollStudentSelect.appendChild(option1);
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = student.id;
+                    option2.textContent = `${student.first_name} ${student.last_name} (${student.student_id})`;
+                    quickSubjectStudentSelect.appendChild(option2);
+                });
+                
+                // Add change event listener to load available subjects when a student is selected
+                quickSubjectStudentSelect.addEventListener('change', loadAvailableSubjectsForStudent);
+            } else {
+                // Add a no students option if none are found
+                const noStudentsOption1 = document.createElement('option');
+                noStudentsOption1.disabled = true;
+                noStudentsOption1.textContent = 'No students available';
+                quickEnrollStudentSelect.appendChild(noStudentsOption1);
+                
+                const noStudentsOption2 = document.createElement('option');
+                noStudentsOption2.disabled = true;
+                noStudentsOption2.textContent = 'No students available';
+                quickSubjectStudentSelect.appendChild(noStudentsOption2);
+            }
+        } catch (error) {
+            console.error('Error loading students for enrollment forms:', error);
+            
+            // Show error in the select elements
+            const quickEnrollStudentSelect = document.getElementById('quick_enroll_student');
+            const quickSubjectStudentSelect = document.getElementById('quick_subject_student');
+            
+            quickEnrollStudentSelect.innerHTML = '<option value="" disabled selected>Error loading students</option>';
+            quickSubjectStudentSelect.innerHTML = '<option value="" disabled selected>Error loading students</option>';
+        }
+    }
+    
+    async function loadSubjectsForEnrollmentForm() {
+        try {
+            // Get the subject select element
+            const quickEnrollSubjectSelect = document.getElementById('quick_enroll_subject');
+            
+            // Clear existing options and add loading placeholder
+            quickEnrollSubjectSelect.innerHTML = '<option value="" disabled selected>Loading subjects...</option>';
+            
+            // Directly fetch subjects from the API
+            const response = await fetch('/api/subjects/');
+            if (!response.ok) throw new Error('Failed to fetch subjects');
+            
+            const data = await response.json();
+            const subjects = data.results || [];
+            
+            // Clear loading placeholder
+            quickEnrollSubjectSelect.innerHTML = '<option value="" disabled selected>Choose a subject...</option>';
+            
+            // Add subject options
+            if (subjects.length > 0) {
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.id;
+                    option.textContent = `${subject.name} (${subject.code})`;
+                    quickEnrollSubjectSelect.appendChild(option);
+                });
+            } else {
+                // Add a no subjects option if none are found
+                const noSubjectsOption = document.createElement('option');
+                noSubjectsOption.disabled = true;
+                noSubjectsOption.textContent = 'No subjects available';
+                quickEnrollSubjectSelect.appendChild(noSubjectsOption);
+            }
+        } catch (error) {
+            console.error('Error loading subjects for enrollment form:', error);
+            
+            // Show error in the select element
+            const quickEnrollSubjectSelect = document.getElementById('quick_enroll_subject');
+            quickEnrollSubjectSelect.innerHTML = '<option value="" disabled selected>Error loading subjects</option>';
+        }
+    }
+    
+    async function loadAvailableSubjectsForStudent() {
+        try {
+            const studentId = document.getElementById('quick_subject_student').value;
+            if (!studentId) {
+                // If no student is selected, clear the subject list
+                const subjectListSelect = document.getElementById('quick_subject_list');
+                subjectListSelect.innerHTML = '<option disabled selected>Select a student first</option>';
+                return;
+            }
+            
+            // Get the student name for better feedback
+            const studentSelect = document.getElementById('quick_subject_student');
+            const studentName = studentSelect.options[studentSelect.selectedIndex].text;
+            
+            // Show loading state
+            const subjectListSelect = document.getElementById('quick_subject_list');
+            subjectListSelect.innerHTML = `<option disabled selected>Loading subjects for ${studentName}...</option>`;
+            
+            console.log(`Fetching available subjects for student ID: ${studentId}`);
+            
+            // Get available subjects for the selected student
+            const response = await fetch(`/api/students/${studentId}/available_subjects/`);
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Available subjects response:', data);
+            
+            // Clear loading message
+            subjectListSelect.innerHTML = '';
+            
+            if (!Array.isArray(data) || data.length === 0) {
+                // No available subjects for this student
+                const option = document.createElement('option');
+                option.disabled = true;
+                option.textContent = `${studentName} is already enrolled in all subjects`;
+                subjectListSelect.appendChild(option);
+                
+                // Add a help text
+                const helpText = document.createElement('div');
+                helpText.className = 'form-text text-muted mt-2';
+                helpText.innerHTML = 'This student is already enrolled in all available subjects.';
+                subjectListSelect.parentNode.appendChild(helpText);
+            } else {
+                // Add all available subjects to the select list
+                data.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.id;
+                    option.textContent = `${subject.name} (${subject.code})`;
+                    subjectListSelect.appendChild(option);
+                });
+                
+                // Add a helpful message
+                const helpText = document.createElement('div');
+                helpText.className = 'form-text text-muted mt-2';
+                helpText.innerHTML = `<small>Showing ${data.length} available subjects for ${studentName}.</small>`;
+                
+                // Remove any existing help text before adding new one
+                const existingHelpText = subjectListSelect.parentNode.querySelector('.form-text');
+                if (existingHelpText) {
+                    existingHelpText.remove();
+                }
+                
+                subjectListSelect.parentNode.appendChild(helpText);
+            }
+        } catch (error) {
+            console.error('Error loading available subjects:', error);
+            
+            // If the API call fails, load all subjects as a fallback
+            try {
+                const subjectListSelect = document.getElementById('quick_subject_list');
+                subjectListSelect.innerHTML = '<option disabled selected>Loading all subjects (fallback)...</option>';
+                
+                console.log('Falling back to loading all subjects');
+                const response = await fetch('/api/subjects/');
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('All subjects response:', data);
+                
+                // Clear loading message
+                subjectListSelect.innerHTML = '';
+                
+                if (!data.results || data.results.length === 0) {
+                    const option = document.createElement('option');
+                    option.disabled = true;
+                    option.textContent = 'No subjects available';
+                    subjectListSelect.appendChild(option);
+                } else {
+                    // Add all subjects to the select list
+                    data.results.forEach(subject => {
+                        const option = document.createElement('option');
+                        option.value = subject.id;
+                        option.textContent = `${subject.name} (${subject.code})`;
+                        subjectListSelect.appendChild(option);
+                    });
+                    
+                    // Add a helpful message about fallback
+                    const helpText = document.createElement('div');
+                    helpText.className = 'form-text text-warning mt-2';
+                    helpText.innerHTML = `<small><i class="fas fa-exclamation-triangle"></i> Showing all subjects as a fallback. Some may already be enrolled.</small>`;
+                    
+                    // Remove any existing help text before adding new one
+                    const existingHelpText = subjectListSelect.parentNode.querySelector('.form-text');
+                    if (existingHelpText) {
+                        existingHelpText.remove();
+                    }
+                    
+                    subjectListSelect.parentNode.appendChild(helpText);
+                }
+            } catch (fallbackError) {
+                console.error('Error loading fallback subjects:', fallbackError);
+                const subjectListSelect = document.getElementById('quick_subject_list');
+                subjectListSelect.innerHTML = '<option disabled selected>Error loading subjects</option>';
+                
+                // Add error message
+                const errorText = document.createElement('div');
+                errorText.className = 'form-text text-danger mt-2';
+                errorText.innerHTML = '<small><i class="fas fa-exclamation-circle"></i> Failed to load subjects. Please try again later.</small>';
+                
+                // Remove any existing help text before adding new one
+                const existingHelpText = subjectListSelect.parentNode.querySelector('.form-text');
+                if (existingHelpText) {
+                    existingHelpText.remove();
+                }
+                
+                subjectListSelect.parentNode.appendChild(errorText);
+            }
+        }
+    }
+    
+    function populateSubjectList(subjects) {
+        const subjectListSelect = document.getElementById('quick_subject_list');
+        subjectListSelect.innerHTML = '';
+        
+        if (!subjects || subjects.length === 0) {
+            const option = document.createElement('option');
+            option.disabled = true;
+            option.textContent = 'No available subjects';
+            subjectListSelect.appendChild(option);
+        } else {
+            subjects.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject.id;
+                option.textContent = `${subject.name} (${subject.code})`;
+                subjectListSelect.appendChild(option);
+            });
+        }
+    }
+    
+    async function handleQuickEnrollStudent() {
+        try {
+            const form = document.getElementById('quick-enroll-student-form');
+            const studentSelect = form.querySelector('#quick_enroll_student');
+            const subjectSelect = form.querySelector('#quick_enroll_subject');
+            const studentId = studentSelect.value;
+            const subjectId = subjectSelect.value;
+            
+            if (!studentId) {
+                showAlert('Please select a student', 'danger');
+                return;
+            }
+            
+            if (!subjectId) {
+                showAlert('Please select a subject', 'danger');
+                return;
+            }
+            
+            // Get the student and subject names for better feedback
+            const studentName = studentSelect.options[studentSelect.selectedIndex].text;
+            const subjectName = subjectSelect.options[subjectSelect.selectedIndex].text;
+            
+            // Show loading indicator
+            const enrollButton = document.getElementById('quick-enroll-student-btn');
+            const originalText = enrollButton.textContent;
+            enrollButton.disabled = true;
+            enrollButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enrolling...';
+            
+            console.log(`Enrolling student ${studentId} (${studentName}) in subject ${subjectId} (${subjectName})`);
+            
+            const response = await fetch(`/api/students/${studentId}/enroll/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify({ subject_id: subjectId })
+            });
+            
+            const data = await response.json();
+            console.log('Enrollment response:', data);
+            
+            // Reset button state
+            enrollButton.disabled = false;
+            enrollButton.textContent = originalText;
+            
+            if (response.ok) {
+                showAlert(data.message || `Successfully enrolled ${studentName} in ${subjectName}`);
+                form.reset();
+                const modal = bootstrap.Modal.getInstance(document.getElementById('quickEnrollStudentModal'));
+                modal.hide();
+                loadDashboardData();
+            } else {
+                showAlert(data.error || `Failed to enroll ${studentName} in ${subjectName}`, 'danger');
+            }
+        } catch (error) {
+            console.error('Error enrolling student:', error);
+            showAlert('An error occurred while enrolling the student', 'danger');
+            
+            // Reset button state in case of error
+            const enrollButton = document.getElementById('quick-enroll-student-btn');
+            enrollButton.disabled = false;
+            enrollButton.textContent = 'Enroll';
+        }
+    }
+    
+    async function handleQuickAddSubjectToStudent() {
+        try {
+            const form = document.getElementById('quick-add-subject-to-student-form');
+            const studentId = form.querySelector('#quick_subject_student').value;
+            const subjectSelect = form.querySelector('#quick_subject_list');
+            
+            // Get all selected options (handles multiple selections)
+            const selectedSubjects = Array.from(subjectSelect.selectedOptions).map(option => option.value);
+            
+            if (!studentId) {
+                showAlert('Please select a student', 'danger');
+                return;
+            }
+            
+            if (selectedSubjects.length === 0) {
+                showAlert('Please select at least one subject', 'danger');
+                return;
+            }
+            
+            // Show loading indicator
+            const addButton = document.getElementById('quick-add-subject-to-student-btn');
+            const originalText = addButton.textContent;
+            addButton.disabled = true;
+            addButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+            
+            // Enroll student in each selected subject
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const subjectId of selectedSubjects) {
+                try {
+                    console.log(`Enrolling student ${studentId} in subject ${subjectId}`);
+                    const response = await fetch(`/api/students/${studentId}/enroll/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken()
+                        },
+                        body: JSON.stringify({ subject_id: subjectId })
+                    });
+                    
+                    const data = await response.json();
+                    console.log('Enrollment response:', data);
+                    
+                    if (response.ok) {
+                        successCount++;
+                    } else {
+                        errorCount++;
+                        console.error('Error response:', data);
+                    }
+                } catch (e) {
+                    errorCount++;
+                    console.error(`Error enrolling in subject ${subjectId}:`, e);
+                }
+            }
+            
+            // Reset button state
+            addButton.disabled = false;
+            addButton.textContent = originalText;
+            
+            if (successCount > 0) {
+                showAlert(`Successfully enrolled student in ${successCount} subject(s)${errorCount > 0 ? ` (${errorCount} failed)` : ''}`);
+                form.reset();
+                const modal = bootstrap.Modal.getInstance(document.getElementById('quickAddSubjectToStudentModal'));
+                modal.hide();
+                loadDashboardData();
+            } else {
+                showAlert('Failed to enroll student in any subjects', 'danger');
+            }
+        } catch (error) {
+            console.error('Error adding subjects to student:', error);
+            showAlert('An error occurred while adding subjects to the student', 'danger');
+            
+            // Reset button state in case of error
+            const addButton = document.getElementById('quick-add-subject-to-student-btn');
+            addButton.disabled = false;
+            addButton.textContent = 'Add Subjects';
+        }
+    }
+    
+    async function loadAllSubjectsForMultiSelect() {
+        try {
+            // Get the subject list select element
+            const subjectListSelect = document.getElementById('quick_subject_list');
+            subjectListSelect.innerHTML = '<option disabled>Loading subjects...</option>';
+            
+            // Fetch all subjects directly from the API
+            const response = await fetch('/api/subjects/');
+            if (!response.ok) throw new Error('Failed to fetch subjects');
+            
+            const data = await response.json();
+            const subjects = data.results || [];
+            
+            // Clear the loading message
+            subjectListSelect.innerHTML = '';
+            
+            if (subjects.length === 0) {
+                const option = document.createElement('option');
+                option.disabled = true;
+                option.textContent = 'No subjects available';
+                subjectListSelect.appendChild(option);
+            } else {
+                // Add all subjects to the select list
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.id;
+                    option.textContent = `${subject.name} (${subject.code})`;
+                    subjectListSelect.appendChild(option);
+                });
+                
+                // Add a helpful message
+                const helpText = document.createElement('div');
+                helpText.className = 'form-text mt-2';
+                helpText.innerHTML = `<small>Showing all ${subjects.length} subjects.</small>`;
+                subjectListSelect.parentNode.appendChild(helpText);
+            }
+        } catch (error) {
+            console.error('Error loading subjects for multi-select:', error);
+            const subjectListSelect = document.getElementById('quick_subject_list');
+            subjectListSelect.innerHTML = '<option disabled>Error loading subjects</option>';
+        }
+    }
+    
+    function getCsrfToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+               document.cookie.split('; ')
+                   .find(row => row.startsWith('csrftoken='))
+                   ?.split('=')[1] || '';
+    }
+</script>
+{% endblock %}

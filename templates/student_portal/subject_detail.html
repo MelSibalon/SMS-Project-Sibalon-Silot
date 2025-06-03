@@ -1,0 +1,1075 @@
+{% extends 'student_portal/base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><span id="subject-name">Subject Details</span></h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'subjects' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Back to Subjects
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header text-white" style="background-color: #2d3a3a;">
+                <h5 class="card-title mb-0">Subject Information</h5>
+            </div>
+            <div class="card-body" id="subject-info">
+                <div class="mb-3 placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                </div>
+                <div class="mb-3 placeholder-glow">
+                    <span class="placeholder col-5"></span>
+                </div>
+                <div class="mb-3 placeholder-glow">
+                    <span class="placeholder col-9"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Enrolled Students</h5>
+                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addStudentToSubjectModal">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <div class="scrollable-container" style="max-height: 300px; overflow-y: auto; padding: 1rem;">
+                    <ul class="list-group" id="students-list">
+                        <!-- Students list will be loaded here -->
+                    </ul>
+                    <div id="no-students-message" class="alert alert-info mt-3 d-none">
+                        No students enrolled.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Grades</h5>
+                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addGradeModal">
+                    <i class="fas fa-plus"></i> Add Grade
+                </button>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs mb-3" id="gradesTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all-grades" type="button" role="tab">All</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="activities-tab" data-bs-toggle="tab" data-bs-target="#activities" type="button" role="tab">Activities</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="quizzes-tab" data-bs-toggle="tab" data-bs-target="#quizzes" type="button" role="tab">Quizzes</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="exams-tab" data-bs-toggle="tab" data-bs-target="#exams" type="button" role="tab">Exams</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="gradesTabContent">
+                    <div class="tab-pane fade show active" id="all-grades" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Type</th>
+                                        <th>Score</th>
+                                        <th>Date</th>
+                                        <th>Name/Title</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="all-grades-table">
+                                    <!-- All grades will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="no-grades-message" class="alert alert-info d-none">
+                            No grades found.
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="activities" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Score</th>
+                                        <th>Date</th>
+                                        <th>Name/Title</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activities-table">
+                                    <!-- Activities will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="quizzes" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Score</th>
+                                        <th>Date</th>
+                                        <th>Name/Title</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quizzes-table">
+                                    <!-- Quizzes will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="exams" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Score</th>
+                                        <th>Date</th>
+                                        <th>Name/Title</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exams-table">
+                                    <!-- Exams will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentToSubjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Student to Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="student-select" class="form-label">Select Student</label>
+                    <select class="form-select" id="student-select">
+                        <option value="" selected disabled>Choose a student...</option>
+                        <!-- Student options will be loaded here -->
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="add-student-to-subject-btn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Grade Modal -->
+<div class="modal fade" id="addGradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Grade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-grade-form">
+                    <input type="hidden" id="grade_subject_id">
+                    <div class="mb-3">
+                        <label for="grade_student" class="form-label">Student</label>
+                        <select class="form-select" id="grade_student" required>
+                            <option value="" selected disabled>Select student...</option>
+                            <!-- Subject's students will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="grade_type" class="form-label">Grade Type</label>
+                        <select class="form-select" id="grade_type" required>
+                            <option value="" selected disabled>Select type...</option>
+                            <option value="ACTIVITY">Activity</option>
+                            <option value="QUIZ">Quiz</option>
+                            <option value="EXAM">Exam</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="grade_score" class="form-label">Score</label>
+                        <input type="number" min="0" max="100" step="0.01" class="form-control" id="grade_score" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="grade_max_score" class="form-label">Max Score</label>
+                        <input type="number" min="0" step="0.01" class="form-control" id="grade_max_score" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="grade_date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="grade_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="grade_description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="grade_description">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-grade-btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Grade Modal -->
+<div class="modal fade" id="editGradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Grade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-grade-form">
+                    <input type="hidden" id="edit_grade_id">
+                    <div class="mb-3">
+                        <label for="edit_grade_student" class="form-label">Student</label>
+                        <select class="form-select" id="edit_grade_student" required>
+                            <!-- Subject's students will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_grade_type" class="form-label">Grade Type</label>
+                        <select class="form-select" id="edit_grade_type" required>
+                            <option value="ACTIVITY">Activity</option>
+                            <option value="QUIZ">Quiz</option>
+                            <option value="EXAM">Exam</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_grade_score" class="form-label">Score</label>
+                        <input type="number" min="0" max="100" step="1" class="form-control" id="edit_grade_score" required oninput="this.value = Math.floor(this.value);">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_grade_max_score" class="form-label">Max Score</label>
+                        <input type="number" min="0" step="0.01" class="form-control" id="edit_grade_max_score" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_grade_date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="edit_grade_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_grade_description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="edit_grade_description">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="update-grade-btn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Grade Modal -->
+<div class="modal fade" id="deleteGradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this grade? This action cannot be undone.</p>
+                <input type="hidden" id="delete_grade_id">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-grade-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/grade-display.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const subjectId = "{{ subject_id }}";
+        console.log("Loaded subject detail page for subject ID:", subjectId);
+        
+        // Load subject details
+        loadSubjectDetails(subjectId);
+        
+        // Load students enrolled in this subject
+        loadSubjectStudents(subjectId);
+        
+        // Load subject grades
+        loadSubjectGrades(subjectId);
+        
+        // Set up modal listener for adding students
+        const addStudentModal = document.getElementById('addStudentToSubjectModal');
+        if (addStudentModal) {
+            addStudentModal.addEventListener('show.bs.modal', function() {
+                console.log('Add student modal is opening');
+                loadAvailableStudentsForSubject(subjectId);
+            });
+        }
+        
+        // Set up event listeners with error checking
+        const addStudentBtn = document.getElementById('add-student-to-subject-btn');
+        if (addStudentBtn) {
+            addStudentBtn.addEventListener('click', function() {
+                handleAddStudentToSubject(subjectId);
+            });
+        }
+        
+        const saveGradeBtn = document.getElementById('save-grade-btn');
+        if (saveGradeBtn) {
+            saveGradeBtn.addEventListener('click', function() {
+                handleSaveGradeFromSubject(subjectId);
+            });
+        }
+        
+        const updateGradeBtn = document.getElementById('update-grade-btn');
+        if (updateGradeBtn) {
+            updateGradeBtn.addEventListener('click', handleUpdateGrade);
+        }
+        
+        const confirmDeleteGradeBtn = document.getElementById('confirm-delete-grade-btn');
+        if (confirmDeleteGradeBtn) {
+            confirmDeleteGradeBtn.addEventListener('click', handleDeleteGrade);
+        }
+        
+        // Set current date as default for new grades
+        const gradeDateInput = document.getElementById('grade_date');
+        if (gradeDateInput) {
+            gradeDateInput.valueAsDate = new Date();
+        }
+    });
+    
+    async function loadSubjectDetails(subjectId) {
+        try {
+            const subject = await getSubject(subjectId);
+            document.getElementById('subject-name').textContent = subject.name;
+            
+            // Update breadcrumb name
+            const breadcrumbName = document.getElementById('breadcrumb-subject-name');
+            if (breadcrumbName) {
+                breadcrumbName.textContent = subject.name;
+            }
+            document.title = `${subject.name} - Subject Details`;
+            
+            // Update subject info card
+            const subjectInfoCard = document.getElementById('subject-info');
+            subjectInfoCard.innerHTML = `
+                <div class="mb-3">
+                    <strong>Subject Code:</strong> ${subject.code}
+                </div>
+                <div class="mb-3">
+                    <strong>Description:</strong> ${subject.description || 'No description available'}
+                </div>
+                <div class="mb-3">
+                    <strong>Students Enrolled:</strong> ${subject.students ? subject.students.length : 0}
+                </div>
+            `;
+            
+            // Store subject ID for form submission
+            document.getElementById('grade_subject_id').value = subject.id;
+        } catch (error) {
+            console.error('Error loading subject details:', error);
+            showAlert('Error loading subject details', 'danger');
+        }
+    }
+    
+    async function loadSubjectStudents(subjectId) {
+        try {
+            console.log('Loading students for subject ID:', subjectId);
+            
+            // Add cache-busting parameter to avoid browser caching
+            const timestamp = new Date().getTime();
+            const response = await fetch(`/api/subjects/${subjectId}/students/?_=${timestamp}`);
+            
+            if (!response.ok) {
+                throw new Error(`Failed to fetch subject students: ${response.status}`);
+            }
+            
+            const students = await response.json();
+            console.log('Received students data:', students);
+            
+            const studentsList = document.getElementById('students-list');
+            const noStudentsMessage = document.getElementById('no-students-message');
+            
+            if (!studentsList || !noStudentsMessage) {
+                console.error('Required DOM elements not found');
+                return;
+            }
+            
+            if (!students || students.length === 0) {
+                console.log('No students enrolled in this subject');
+                studentsList.innerHTML = '';
+                noStudentsMessage.classList.remove('d-none');
+                return;
+            }
+            
+            console.log('Rendering', students.length, 'students in the list');
+            noStudentsMessage.classList.add('d-none');
+            
+            // Clear the list first
+            studentsList.innerHTML = '';
+            
+            // Create elements manually instead of using innerHTML for better DOM manipulation
+            students.forEach(student => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                listItem.dataset.studentId = student.id;
+                
+                const studentInfoDiv = document.createElement('div');
+                
+                const studentLink = document.createElement('a');
+                studentLink.href = `/students/${student.id}/`;
+                studentLink.className = 'text-decoration-none';
+                studentLink.textContent = `${student.first_name} ${student.last_name}`;
+                
+                const studentIdBadge = document.createElement('span');
+                studentIdBadge.className = 'badge bg-success rounded-pill ms-2'; 
+                studentIdBadge.style = 'background-color: #3a5a40 !important; color: white !important;';
+                studentIdBadge.textContent = student.student_id;
+                
+                studentInfoDiv.appendChild(studentLink);
+                studentInfoDiv.appendChild(studentIdBadge);
+                
+                const removeButton = document.createElement('button');
+                removeButton.className = 'btn btn-sm btn-outline-danger';
+                removeButton.onclick = () => handleRemoveStudentFromSubject(subjectId, student.id);
+                
+                const removeIcon = document.createElement('i');
+                removeIcon.className = 'fas fa-times';
+                removeButton.appendChild(removeIcon);
+                
+                listItem.appendChild(studentInfoDiv);
+                listItem.appendChild(removeButton);
+                studentsList.appendChild(listItem);
+            });
+            
+            // Populate student dropdown for adding grades
+            const studentSelect = document.getElementById('grade_student');
+            if (studentSelect) {
+                studentSelect.innerHTML = '<option value="" selected disabled>Select student...</option>';
+                students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = `${student.first_name} ${student.last_name}`;
+                    studentSelect.appendChild(option);
+                });
+            }
+            
+            // Also populate the edit grade form dropdown
+            const editStudentSelect = document.getElementById('edit_grade_student');
+            if (editStudentSelect) {
+                editStudentSelect.innerHTML = '';
+                students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = `${student.first_name} ${student.last_name}`;
+                    editStudentSelect.appendChild(option);
+                });
+            }
+            
+            console.log('Successfully updated student list with', students.length, 'students');
+            
+        } catch (error) {
+            console.error('Error loading subject students:', error);
+            showAlert('Error loading students: ' + error.message, 'danger');
+        }
+    }
+    
+    async function loadAvailableStudentsForSubject(subjectId) {
+        try {
+            console.log('Loading available students for subject ID:', subjectId);
+            
+            // First make sure the dropdown element exists
+            const studentSelect = document.getElementById('student-select');
+            if (!studentSelect) {
+                console.error('student-select dropdown not found in the DOM');
+                // Try to find all select elements to help with debugging
+                const allSelects = document.querySelectorAll('select');
+                console.log('All select elements in the DOM:', Array.from(allSelects).map(s => s.id));
+                throw new Error('Student dropdown not found');
+            }
+            
+            console.log('Found student-select element, fetching students...');
+            
+            // Add cache-busting parameter to avoid browser caching
+            const timestamp = new Date().getTime();
+            
+            // Use API endpoint that specifically returns available students
+            const availableResponse = await fetch(`/api/subjects/${subjectId}/available_students/?_=${timestamp}`);
+            if (!availableResponse.ok) {
+                // Fall back to the old method if the specific endpoint isn't available
+                console.log('Available students endpoint failed, using fallback method');
+                await loadAvailableStudentsFallback(subjectId, studentSelect);
+                return;
+            }
+            
+            const availableStudents = await availableResponse.json();
+            console.log('Available students for enrollment:', availableStudents);
+            console.log('Number of available students:', availableStudents.length);
+            
+            // Clear the dropdown first
+            studentSelect.innerHTML = '';
+            
+            // Add default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            defaultOption.textContent = 'Choose a student...';
+            studentSelect.appendChild(defaultOption);
+            
+            // Populate student dropdown for enrollment            
+            if (availableStudents.length === 0) {
+                console.log('No available students for this subject');
+                const option = document.createElement('option');
+                option.disabled = true;
+                option.textContent = 'All students are already enrolled in this subject';
+                studentSelect.appendChild(option);
+                document.getElementById('add-student-to-subject-btn').disabled = true;
+            } else {
+                // Add each available student to the dropdown
+                availableStudents.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = `${student.first_name} ${student.last_name} (${student.student_id})`;
+                    studentSelect.appendChild(option);
+                });
+                document.getElementById('add-student-to-subject-btn').disabled = false;
+                console.log('Added students to dropdown:', availableStudents.map(s => ({ id: s.id, name: `${s.first_name} ${s.last_name}` })));
+            }
+            
+            // Log the state of the dropdown after population
+            console.log('Final dropdown state:', Array.from(studentSelect.options).map(opt => ({ value: opt.value, text: opt.text })));
+            
+        } catch (error) {
+            console.error('Error loading available students:', error);
+            showAlert('Error loading available students: ' + error.message, 'danger');
+            
+            // Make sure the dropdown has at least an error message
+            const studentSelect = document.getElementById('student-select');
+            if (studentSelect) {
+                studentSelect.innerHTML = '<option value="" selected disabled>Error loading students</option>';
+            }
+            const addBtn = document.getElementById('add-student-to-subject-btn');
+            if (addBtn) {
+                addBtn.disabled = true;
+            }
+        }
+    }
+    
+    async function loadAvailableStudentsFallback(subjectId, studentSelect) {
+        // First, get all students with cache busting
+        const timestamp = new Date().getTime();
+        const allStudentsResponse = await fetch(`/api/students/?_=${timestamp}`);
+        if (!allStudentsResponse.ok) {
+            throw new Error(`Failed to fetch all students: ${allStudentsResponse.status}`);
+        }
+        
+        // Parse the response and handle pagination if needed
+        const studentsData = await allStudentsResponse.json();
+        let allStudents = [];
+        
+        if (Array.isArray(studentsData)) {
+            allStudents = studentsData;
+        } else if (studentsData.results && Array.isArray(studentsData.results)) {
+            allStudents = studentsData.results;
+        } else {
+            throw new Error('Invalid response format from students API');
+        }
+        
+        console.log('All students in system:', allStudents);
+        
+        if (allStudents.length === 0) {
+            throw new Error('No students exist in the system');
+        }
+        
+        // Get enrolled students for this subject with cache busting
+        const enrolledResponse = await fetch(`/api/subjects/${subjectId}/students/?_=${timestamp}`);
+        if (!enrolledResponse.ok) {
+            throw new Error(`Failed to fetch enrolled students: ${enrolledResponse.status}`);
+        }
+        
+        const enrolledStudents = await enrolledResponse.json();
+        console.log('Enrolled students:', enrolledStudents);
+        console.log('Number of enrolled students:', enrolledStudents.length);
+        
+        // Get enrolled student IDs
+        const enrolledStudentIds = enrolledStudents.map(student => student.id);
+        console.log('Enrolled student IDs:', enrolledStudentIds);
+        
+        // Filter out already enrolled students
+        const availableStudents = allStudents.filter(student => 
+            !enrolledStudentIds.includes(student.id)
+        );
+        
+        console.log('Available students for enrollment (fallback):', availableStudents);
+        console.log('Number of available students:', availableStudents.length);
+        
+        // Clear the dropdown first
+        studentSelect.innerHTML = '';
+        
+        // Add default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = 'Choose a student...';
+        studentSelect.appendChild(defaultOption);
+        
+        if (availableStudents.length === 0) {
+            console.log('No available students for this subject');
+            const option = document.createElement('option');
+            option.disabled = true;
+            option.textContent = 'All students are already enrolled in this subject';
+            studentSelect.appendChild(option);
+            document.getElementById('add-student-to-subject-btn').disabled = true;
+        } else {
+            // Add each available student to the dropdown
+            availableStudents.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.first_name} ${student.last_name} (${student.student_id})`;
+                studentSelect.appendChild(option);
+            });
+            document.getElementById('add-student-to-subject-btn').disabled = false;
+            console.log('Added students to dropdown (fallback):', availableStudents.map(s => ({ id: s.id, name: `${s.first_name} ${s.last_name}` })));
+        }
+    }
+    
+    async function loadSubjectGrades(subjectId) {
+        try {
+            const grades = await getSubjectGrades(subjectId);
+            
+            // Get the table bodies for each grade type
+            const allGradesTable = document.getElementById('all-grades-table');
+            const activitiesTable = document.getElementById('activities-table');
+            const quizzesTable = document.getElementById('quizzes-table');
+            const examsTable = document.getElementById('exams-table');
+            const noGradesMessage = document.getElementById('no-grades-message');
+            
+            if (grades.length === 0) {
+                allGradesTable.innerHTML = '';
+                activitiesTable.innerHTML = '';
+                quizzesTable.innerHTML = '';
+                examsTable.innerHTML = '';
+                noGradesMessage.classList.remove('d-none');
+                return;
+            }
+            
+            noGradesMessage.classList.add('d-none');
+            
+            // Filter grades by type
+            const activities = grades.filter(grade => grade.grade_type === 'ACTIVITY');
+            const quizzes = grades.filter(grade => grade.grade_type === 'QUIZ');
+            const exams = grades.filter(grade => grade.grade_type === 'EXAM');
+            
+            // Populate all grades table
+            allGradesTable.innerHTML = grades.map(grade => `
+                <tr>
+                    <td>${grade.student_name}</td>
+                    <td><span class="badge grade-${grade.grade_type.toLowerCase()}">${grade.grade_type}</span></td>
+                    <td>${grade.score}/${grade.max_score} (${((grade.score / grade.max_score) * 100).toFixed(1)}%)</td>
+                    <td>${formatDate(grade.date)}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="loadEditGrade(${grade.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="confirmDeleteGrade(${grade.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Populate activities table
+            activitiesTable.innerHTML = activities.map(grade => `
+                <tr>
+                    <td>${grade.student_name}</td>
+                    <td>${grade.score}/${grade.max_score} (${((grade.score / grade.max_score) * 100).toFixed(1)}%)</td>
+                    <td>${formatDate(grade.date)}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="loadEditGrade(${grade.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="confirmDeleteGrade(${grade.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Populate quizzes table
+            quizzesTable.innerHTML = quizzes.map(grade => `
+                <tr>
+                    <td>${grade.student_name}</td>
+                    <td>${grade.score}/${grade.max_score} (${((grade.score / grade.max_score) * 100).toFixed(1)}%)</td>
+                    <td>${formatDate(grade.date)}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="loadEditGrade(${grade.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="confirmDeleteGrade(${grade.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Populate exams table
+            examsTable.innerHTML = exams.map(grade => `
+                <tr>
+                    <td>${grade.student_name}</td>
+                    <td>${grade.score}/${grade.max_score} (${((grade.score / grade.max_score) * 100).toFixed(1)}%)</td>
+                    <td>${formatDate(grade.date)}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="loadEditGrade(${grade.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="confirmDeleteGrade(${grade.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+        } catch (error) {
+            console.error('Error loading subject grades:', error);
+            showAlert('Error loading grades', 'danger');
+        }
+    }
+    
+    async function handleAddStudentToSubject(subjectId) {
+        try {
+            console.log('Starting process to add student to subject', subjectId);
+            
+            const studentSelect = document.getElementById('student-select');
+            if (!studentSelect) {
+                console.error('Cannot find student-select dropdown');
+                showAlert('Error: Student selection dropdown not found', 'danger');
+                return;
+            }
+            
+            const studentId = studentSelect.value;
+            console.log(`Attempting to add student ${studentId} to subject ${subjectId}`);
+            
+            if (!studentId) {
+                showAlert('Please select a student to add', 'warning');
+                return;
+            }
+            
+            // Show loading indicator
+            document.getElementById('add-student-to-subject-btn').disabled = true;
+            document.getElementById('add-student-to-subject-btn').innerText = 'Adding...';
+            
+            // Use the dedicated API endpoint for adding students with cache busting
+            const timestamp = new Date().getTime();
+            const addResponse = await fetch(`/api/subjects/${subjectId}/add_student/?_=${timestamp}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ student_id: studentId })
+            });
+            
+            console.log('Add student response status:', addResponse.status);
+            
+            // Try to parse the response as JSON, but handle if it's text
+            let result;
+            let responseText;
+            try {
+                responseText = await addResponse.text();
+                result = JSON.parse(responseText);
+            } catch (e) {
+                console.error('Error parsing JSON response:', e, 'Raw response:', responseText);
+                result = { message: responseText || 'Unknown error occurred' };
+            }
+            
+            console.log('Add student result:', result);
+            
+            if (!addResponse.ok) {
+                throw new Error(result.error || `Failed to add student: ${addResponse.status}`);
+            }
+            
+            // Show success message
+            showAlert(result.message || 'Successfully added student to subject', 'success');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentToSubjectModal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Reset button state
+            document.getElementById('add-student-to-subject-btn').disabled = false;
+            document.getElementById('add-student-to-subject-btn').innerText = 'Add Student';
+            
+            console.log('Refreshing student lists after successful addition');
+            
+            // Force reload the page to ensure all data is refreshed properly
+            // This is more reliable than just updating the lists
+            window.location.reload();
+            
+        } catch (error) {
+            console.error('Error adding student to subject:', error);
+            showAlert(`Error adding student to subject: ${error.message}`, 'danger');
+            
+            // Reset button state
+            document.getElementById('add-student-to-subject-btn').disabled = false;
+            document.getElementById('add-student-to-subject-btn').innerText = 'Add Student';
+        }
+    }
+    
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    async function handleSaveGradeFromSubject(subjectId) {
+        try {
+            const studentId = document.getElementById('grade_student').value;
+            const gradeType = document.getElementById('grade_type').value;
+            const score = document.getElementById('grade_score').value;
+            const maxScore = document.getElementById('grade_max_score').value;
+            const date = document.getElementById('grade_date').value;
+            const description = document.getElementById('grade_description').value;
+            
+            if (!studentId || !gradeType || !score || !maxScore || !date) {
+                showAlert('Please fill in all required fields', 'warning');
+                return;
+            }
+            
+            // Show loading indicator
+            showLoading();
+            
+            const gradeData = {
+                student: studentId,
+                subject: subjectId,
+                grade_type: gradeType,
+                score: parseFloat(score),
+                max_score: parseFloat(maxScore),
+                date: date,
+                description: description
+            };
+            
+            await createGrade(gradeData);
+            hideLoading();
+            showAlert('Grade added successfully', 'success');
+            
+            // Reset form and close modal
+            document.getElementById('grade_student').value = '';
+            document.getElementById('grade_type').value = '';
+            document.getElementById('grade_score').value = '';
+            document.getElementById('grade_max_score').value = '';
+            document.getElementById('grade_date').valueAsDate = new Date();
+            document.getElementById('grade_description').value = '';
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addGradeModal'));
+            modal.hide();
+            
+            // Reload subject grades
+            loadSubjectGrades(subjectId);
+            
+        } catch (error) {
+            hideLoading();
+            console.error('Error adding grade:', error);
+            showAlert('Error adding grade: ' + (error.message || 'Unknown error'), 'danger');
+        }
+    }
+    
+    async function loadEditGrade(gradeId) {
+        try {
+            const grade = await getGrade(gradeId);
+            
+            // Fill form with grade data
+            document.getElementById('edit_grade_id').value = grade.id;
+            document.getElementById('edit_grade_student').value = grade.student;
+            document.getElementById('edit_grade_type').value = grade.grade_type;
+            document.getElementById('edit_grade_score').value = grade.score;
+            document.getElementById('edit_grade_max_score').value = grade.max_score;
+            document.getElementById('edit_grade_date').value = grade.date;
+            document.getElementById('edit_grade_description').value = grade.description || '';
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('editGradeModal'));
+            modal.show();
+            
+        } catch (error) {
+            console.error('Error loading grade for edit:', error);
+            showAlert('Error loading grade details', 'danger');
+        }
+    }
+    
+    async function handleUpdateGrade() {
+        try {
+            const gradeId = document.getElementById('edit_grade_id').value;
+            const studentId = document.getElementById('edit_grade_student').value;
+            const gradeType = document.getElementById('edit_grade_type').value;
+            const score = document.getElementById('edit_grade_score').value;
+            const maxScore = document.getElementById('edit_grade_max_score').value;
+            const date = document.getElementById('edit_grade_date').value;
+            const description = document.getElementById('edit_grade_description').value;
+            
+            if (!studentId || !gradeType || !score || !maxScore || !date) {
+                showAlert('Please fill in all required fields', 'warning');
+                return;
+            }
+            
+            const gradeData = {
+                student: studentId,
+                grade_type: gradeType,
+                score: parseFloat(score),
+                max_score: parseFloat(maxScore),
+                date: date,
+                description: description
+            };
+            
+            await updateGrade(gradeId, gradeData);
+            showAlert('Grade updated successfully', 'success');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editGradeModal'));
+            modal.hide();
+            
+            // Reload subject grades - get subject ID from hidden field
+            const subjectId = document.getElementById('grade_subject_id').value;
+            loadSubjectGrades(subjectId);
+            
+        } catch (error) {
+            console.error('Error updating grade:', error);
+            showAlert('Error updating grade', 'danger');
+        }
+    }
+    
+    function confirmDeleteGrade(gradeId) {
+        document.getElementById('delete_grade_id').value = gradeId;
+        const modal = new bootstrap.Modal(document.getElementById('deleteGradeModal'));
+        modal.show();
+    }
+    
+    async function handleDeleteGrade() {
+        try {
+            const gradeId = document.getElementById('delete_grade_id').value;
+            await deleteGrade(gradeId);
+            showAlert('Grade deleted successfully', 'success');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteGradeModal'));
+            modal.hide();
+            
+            // Reload subject grades - get subject ID from hidden field
+            const subjectId = document.getElementById('grade_subject_id').value;
+            loadSubjectGrades(subjectId);
+            
+        } catch (error) {
+            console.error('Error deleting grade:', error);
+            showAlert('Error deleting grade', 'danger');
+        }
+    }
+    
+    async function handleRemoveStudentFromSubject(subjectId, studentId) {
+        try {
+            if (!confirm('Are you sure you want to remove this student from the subject?')) {
+                return;
+            }
+            
+            console.log(`Attempting to remove student ${studentId} from subject ${subjectId}`);
+            
+            // Use the dedicated API endpoint for removing students with cache busting
+            const timestamp = new Date().getTime();
+            const removeResponse = await fetch(`/api/subjects/${subjectId}/remove_student/?_=${timestamp}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ student_id: studentId })
+            });
+            
+            console.log('Remove student response status:', removeResponse.status);
+            
+            // Try to parse the response as JSON, but handle if it's text
+            let result;
+            let responseText;
+            try {
+                responseText = await removeResponse.text();
+                result = JSON.parse(responseText);
+            } catch (e) {
+                console.error('Error parsing JSON response:', e, 'Raw response:', responseText);
+                result = { message: responseText || 'Unknown error occurred' };
+            }
+            
+            console.log('Remove student result:', result);
+            
+            if (!removeResponse.ok) {
+                throw new Error(result.error || `Failed to remove student: ${removeResponse.status}`);
+            }
+            
+            // Show success message
+            showAlert(result.message || 'Successfully removed student from subject', 'success');
+            
+            // Force reload the page to ensure all data is refreshed properly
+            // This is more reliable than just updating the lists
+            window.location.reload();
+            
+        } catch (error) {
+            console.error('Error removing student from subject:', error);
+            showAlert(`Error removing student: ${error.message}`, 'danger');
+        }
+    }
+    
+    // Make functions globally available
+    window.loadEditGrade = loadEditGrade;
+    window.confirmDeleteGrade = confirmDeleteGrade;
+    window.handleRemoveStudentFromSubject = handleRemoveStudentFromSubject;
+</script>
+{% endblock %}

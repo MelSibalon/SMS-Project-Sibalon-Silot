@@ -1,0 +1,358 @@
+{% extends 'student_portal/base.html' %}
+
+
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Subject Management</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
+            <i class="fas fa-plus"></i> Add Subject
+        </button>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" id="subject-search" class="form-control" placeholder="Search subjects...">
+            <button class="btn" type="button" id="search-button" style="background-color: #3a5a40; color: white;">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Students Enrolled</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="subjects-table-body">
+                    <!-- Subject data will be loaded here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <div id="loading-spinner" class="text-center my-3 d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div id="no-subjects-message" class="alert alert-info d-none">
+            No subjects found.
+        </div>
+    </div>
+</div>
+
+<!-- Subject Modal Forms -->
+<!-- Add Subject Modal -->
+<div class="modal fade" id="addSubjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-subject-form">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Subject Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Subject Code</label>
+                        <input type="text" class="form-control" id="code" name="code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-subject-btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Subject Modal -->
+<div class="modal fade" id="editSubjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-subject-form">
+                    <input type="hidden" id="edit_subject_id">
+                    <div class="mb-3">
+                        <label for="edit_name" class="form-label">Subject Name</label>
+                        <input type="text" class="form-control" id="edit_name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_code" class="form-label">Subject Code</label>
+                        <input type="text" class="form-control" id="edit_code" name="code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_description" class="form-label">Description</label>
+                        <textarea class="form-control" id="edit_description" name="description" rows="3"></textarea>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="update-subject-btn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteSubjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this subject? This action cannot be undone and will remove all grades associated with this subject.</p>
+                <input type="hidden" id="delete_subject_id">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load subjects when the page loads
+        loadSubjects();
+        
+        // Add event listeners for subject actions
+        document.getElementById('save-subject-btn').addEventListener('click', handleSaveSubject);
+        document.getElementById('update-subject-btn').addEventListener('click', handleUpdateSubject);
+        document.getElementById('confirm-delete-btn').addEventListener('click', handleDeleteSubject);
+        document.getElementById('search-button').addEventListener('click', handleSearchSubjects);
+        document.getElementById('subject-search').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                handleSearchSubjects();
+            }
+        });
+    });
+
+    async function loadSubjects() {
+        try {
+            showLoading();
+            const data = await getSubjects();
+            hideLoading();
+            
+            const tableBody = document.getElementById('subjects-table-body');
+            const noSubjectsMessage = document.getElementById('no-subjects-message');
+            
+            if (data.results.length === 0) {
+                tableBody.innerHTML = '';
+                noSubjectsMessage.classList.remove('d-none');
+                return;
+            }
+            
+            noSubjectsMessage.classList.add('d-none');
+            tableBody.innerHTML = data.results.map(subject => `
+                <tr>
+                    <td>${subject.code}</td>
+                    <td>
+                        <a href="/subjects/${subject.id}/">
+                            ${subject.name}
+                        </a>
+                    </td>
+                    <td>${subject.description || '-'}</td>
+                    <td>${subject.students ? subject.students.length : 0}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="loadEditSubject(${subject.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="confirmDeleteSubject(${subject.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (error) {
+            hideLoading();
+            console.error('Error loading subjects:', error);
+        }
+    }
+
+    function handleSearchSubjects() {
+        const searchTerm = document.getElementById('subject-search').value.trim();
+        if (searchTerm) {
+            loadSubjectsWithSearch(searchTerm);
+        } else {
+            loadSubjects();
+        }
+    }
+
+    async function loadSubjectsWithSearch(searchTerm) {
+        try {
+            showLoading();
+            const data = await fetchAPI(`subjects/?search=${encodeURIComponent(searchTerm)}`);
+            hideLoading();
+            
+            const tableBody = document.getElementById('subjects-table-body');
+            const noSubjectsMessage = document.getElementById('no-subjects-message');
+            
+            if (data.results.length === 0) {
+                tableBody.innerHTML = '';
+                noSubjectsMessage.classList.remove('d-none');
+                return;
+            }
+            
+            noSubjectsMessage.classList.add('d-none');
+            tableBody.innerHTML = data.results.map(subject => `
+                <tr>
+                    <td>${subject.code}</td>
+                    <td>
+                        <a href="/subjects/${subject.id}/">
+                            ${subject.name}
+                        </a>
+                    </td>
+                    <td>${subject.description || '-'}</td>
+                    <td>${subject.students ? subject.students.length : 0}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="loadEditSubject(${subject.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="confirmDeleteSubject(${subject.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (error) {
+            hideLoading();
+            console.error('Error searching subjects:', error);
+        }
+    }
+
+    async function handleSaveSubject() {
+        try {
+            const form = document.getElementById('add-subject-form');
+            const formData = new FormData(form);
+            const subjectData = {};
+            
+            formData.forEach((value, key) => {
+                subjectData[key] = value;
+            });
+            
+            await createSubject(subjectData);
+            showAlert('Subject added successfully!');
+            
+            // Reset form and close modal
+            form.reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addSubjectModal'));
+            modal.hide();
+            
+            // Reload subjects list
+            loadSubjects();
+        } catch (error) {
+            console.error('Error saving subject:', error);
+        }
+    }
+
+    async function loadEditSubject(id) {
+        try {
+            const subject = await getSubject(id);
+            
+            // Fill form with subject data
+            document.getElementById('edit_subject_id').value = subject.id;
+            document.getElementById('edit_name').value = subject.name;
+            document.getElementById('edit_code').value = subject.code;
+            document.getElementById('edit_description').value = subject.description || '';
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('editSubjectModal'));
+            modal.show();
+        } catch (error) {
+            console.error('Error loading subject for edit:', error);
+        }
+    }
+
+    async function handleUpdateSubject() {
+        try {
+            const id = document.getElementById('edit_subject_id').value;
+            const form = document.getElementById('edit-subject-form');
+            const formData = new FormData(form);
+            const subjectData = {};
+            
+            formData.forEach((value, key) => {
+                subjectData[key] = value;
+            });
+            
+            await updateSubject(id, subjectData);
+            showAlert('Subject updated successfully!');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editSubjectModal'));
+            modal.hide();
+            
+            // Reload subjects list
+            loadSubjects();
+        } catch (error) {
+            console.error('Error updating subject:', error);
+        }
+    }
+
+    function confirmDeleteSubject(id) {
+        document.getElementById('delete_subject_id').value = id;
+        const modal = new bootstrap.Modal(document.getElementById('deleteSubjectModal'));
+        modal.show();
+    }
+
+    async function handleDeleteSubject() {
+        try {
+            const id = document.getElementById('delete_subject_id').value;
+            await deleteSubject(id);
+            showAlert('Subject deleted successfully!');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteSubjectModal'));
+            modal.hide();
+            
+            // Reload subjects list
+            loadSubjects();
+        } catch (error) {
+            console.error('Error deleting subject:', error);
+        }
+    }
+
+    // Make functions globally available
+    window.loadEditSubject = loadEditSubject;
+    window.confirmDeleteSubject = confirmDeleteSubject;
+</script>
+{% endblock %}
