@@ -3,8 +3,6 @@
 
 set -o errexit
 
-cd student_management_system
-
 # Install Python dependencies
 pip install -r requirements.txt
 
