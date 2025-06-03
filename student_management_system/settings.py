@@ -124,7 +124,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Security settings for production
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Basic security settings - production-specific settings are in settings_production.py
+SECURE_SSL_REDIRECT = False  # Default for development, overridden in production
+SESSION_COOKIE_SECURE = False  # Default for development, overridden in production
+CSRF_COOKIE_SECURE = False  # Default for development, overridden in production

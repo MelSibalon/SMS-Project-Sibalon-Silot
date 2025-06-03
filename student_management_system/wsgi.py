@@ -11,6 +11,10 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'student_management_system.settings')
+# Use production settings if in production environment
+if os.environ.get('ENVIRONMENT') == 'production' or os.environ.get('RENDER', False):
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'student_management_system.settings_production')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'student_management_system.settings')
 
 application = get_wsgi_application()
