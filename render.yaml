@@ -1,25 +1,25 @@
 services:
-  # Web service
+  # Web services:
   - type: web
-    name: sms-project-sibalon-silot
+    name: student-management-system
     env: python
-    buildCommand: bash ./build.sh
-    startCommand: gunicorn app:app
+    buildCommand: ./build.sh
+    startCommand: gunicorn app:app --log-level debug
     envVars:
-      - key: SECRET_KEY
-        generateValue: true
-      - key: DEBUG
-        value: "False"
       - key: PYTHON_VERSION
         value: 3.11.0
+      - key: DEBUG
+        value: True
       - key: RENDER
-        value: "True"
+        value: True
+      - key: SECRET_KEY
+        generateValue: true
       - key: DATABASE_URL
         fromDatabase:
-          name: sms-database
+          name: student-management-db
           property: connectionString
 
 databases:
-  - name: sms-database
+  - name: student-management-db
     databaseName: sms_db
     user: sms_user

@@ -1,24 +1,24 @@
-#!/usr/bin/env bash
-# Build script for Render.com deployment
+#!/bin/bash
+# Simple build script for Render.com deployment
 
 set -o errexit
 
-# Print Python version for debugging
+# Print debug info
+echo "Python version:"
 python --version
+echo "Current directory: $(pwd)"
+echo "Directory contents: $(ls -la)"
 
-# Install Python dependencies
+# Install dependencies
+echo "Installing dependencies..."
 pip install -r requirements.txt
 
-# Collect static files with verbosity
+# Collect static files
 echo "Collecting static files..."
-python manage.py collectstatic --no-input -v 2
+python manage.py collectstatic --no-input
 
-# Run migrations with safety checks
+# Run migrations
 echo "Running migrations..."
-python manage.py makemigrations --check --dry-run
-python manage.py migrate --plan
 python manage.py migrate
 
-# Show static directory structure for debugging
-echo "Static files directory structure:"
-find staticfiles -type f | sort | head -20
+echo "Build completed successfully"

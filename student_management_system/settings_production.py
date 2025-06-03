@@ -2,33 +2,45 @@ import os
 import dj_database_url
 from .settings import *
 
-# Override settings for production
-DEBUG = False
+# Enable debug mode for troubleshooting
+DEBUG = True
 
-# Additional production hosts - settings.py already has basic ones
-ALLOWED_HOSTS.append('sms-project-sibalon-silot.onrender.com')
+# Allow any host for now (we'll lock this down later)
+ALLOWED_HOSTS = ['*']
 
-# Ensure static files are configured properly
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Ensure Whitenoise is configured correctly
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-# CORS settings for production
-CORS_ALLOW_ALL_ORIGINS = True  # Allow API requests from browser
+# CORS settings - allow all for now
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# Security settings for production
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# Disable security settings while debugging
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
-# Ensure we're using the production database
-if 'DATABASE_URL' in os.environ:
+# Simplified database configuration with better error handling
+try:
+    if 'DATABASE_URL' in os.environ:
+        DATABASES = {
+            'default': dj_database_url.config(
+                default=os.environ.get('DATABASE_URL'),
+                conn_max_age=600,
+                conn_health_checks=True,
+                ssl_require=False,  # Try without SSL first
+            )
+        }
+        print(f"Using database configuration: {DATABASES['default']['ENGINE']}")
+except Exception as e:
+    print(f"Error configuring database: {e}")
+    # Fallback to SQLite for debugging if there's an issue
     DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 
 # Ensure secret key is set from environment

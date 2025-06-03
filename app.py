@@ -1,12 +1,15 @@
-# app.py - Direct entry point for Render.com
+# Ultra-simple WSGI application for Render.com
 import os
 import sys
 
-# Add the project directory to the Python path
-sys.path.insert(0, os.path.dirname(__file__))
+# Add the current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# Import the WSGI application from Django project
-from student_management_system.wsgi import application as django_application
+# Explicitly set the Django settings module
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'student_management_system.settings_production')
 
-# Expose the application variable expected by Render
-app = django_application
+# Import the WSGI application
+from django.core.wsgi import get_wsgi_application
+
+# Create the application - this MUST be named 'app' for Render
+app = get_wsgi_application()
