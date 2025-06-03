@@ -4,7 +4,7 @@ services:
     name: sms-project-sibalon-silot
     env: python
     buildCommand: bash ./build.sh
-    startCommand: gunicorn wsgi_app:app
+    startCommand: gunicorn app:app
     envVars:
       - key: SECRET_KEY
         generateValue: true
