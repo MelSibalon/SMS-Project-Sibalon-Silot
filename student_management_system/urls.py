@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from .debug_views import debug_info
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('student_portal.urls')),
+    path('debug-info/', debug_info, name='debug_info'),
 ]
 
 # Serve static files during development

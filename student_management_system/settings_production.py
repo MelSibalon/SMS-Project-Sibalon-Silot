@@ -8,6 +8,13 @@ DEBUG = False
 # Additional production hosts - settings.py already has basic ones
 ALLOWED_HOSTS.append('sms-project-sibalon-silot.onrender.com')
 
+# Ensure static files are configured properly
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# CORS settings for production
+CORS_ALLOW_ALL_ORIGINS = True  # Allow API requests from browser
+CORS_ALLOW_CREDENTIALS = True
+
 # Security settings for production
 SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
